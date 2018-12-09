@@ -1,6 +1,10 @@
 import React from 'react'
 import Notification from '../components/Notification'
 import PropTypes from 'prop-types'
+import { 
+    notify
+ } from '../reducers/blogReducer'
+ import {connect} from 'react-redux';
 
 class BlogForm extends React.Component {
     constructor(props) {
@@ -8,8 +12,7 @@ class BlogForm extends React.Component {
         this.state = {
             title: '',
             author: '',
-            url: '',
-            info: null
+            url: ''
         }
     }
 
@@ -21,11 +24,16 @@ class BlogForm extends React.Component {
             url: this.state.url
         }
         this.props.createBlog(blogObject)
+        /**
         const infotext = 'a new blog \'' + this.state.title + '\' by ' + this.state.author + ' added'
         this.setState({title: '', author: '', url: '', info: infotext})
         setTimeout(() => {
             this.setState({ info: null })
         }, 5000)
+         */
+        const infotext = 'a new blog \'' + this.state.title + '\' by ' + this.state.author + ' added'
+        this.setState({title: '', author: '', url: ''})
+        this.props.notify(infotext, 5)
     }
     
     handleBlogFormChange = (event) => {
@@ -35,7 +43,7 @@ class BlogForm extends React.Component {
     render () {
         return (
             <div>
-                <Notification.Notification message={this.state.info} messageStyle="info-pop-up"/>
+                <Notification.Notification message={this.props.notification} messageStyle="info-pop-up"/>
                 <h3>Create New</h3>
                 <form>
                     <div>
@@ -78,4 +86,17 @@ BlogForm.propTypes = {
     createBlog: PropTypes.func.isRequired
 }
 
-export default BlogForm
+const mapStateToProps = (state) => {
+    return {
+      notification: state.notification
+    }
+  }
+
+const mapDispatchToProps = {
+    notify
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(BlogForm)

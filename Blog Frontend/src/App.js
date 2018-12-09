@@ -7,6 +7,10 @@ import Notification from './components/Notification'
 import './App.css'
 import Togglable from './components/Togglable'
 import blogs from './services/blogs';
+import {connect} from 'react-redux';
+import { 
+    notify
+ } from './reducers/blogReducer'
 
 class App extends React.Component {
     constructor(props) {
@@ -16,7 +20,6 @@ class App extends React.Component {
             user: null,
             username: '',
             password: '',
-            error: null
         }
     }
 
@@ -55,10 +58,8 @@ class App extends React.Component {
             console.log('user from local storage is', localStorageUser)
         } catch (exception) {
             console.log('invalid username and/or password')
-            this.setState({ user: null, error: 'wrong username or password' })
-            setTimeout(() => {
-                this.setState({ error: null })
-            }, 5000)
+            this.setState({ user: null })
+            this.props.notify('wrong username or password', 5)
         }
 
     }
@@ -117,7 +118,7 @@ class App extends React.Component {
         if (this.state.user === null) {
             return (
                 <div>
-                    <Notification.Notification message={this.state.error} messageStyle="error-pop-up"/>
+                    <Notification.Notification message={this.props.notification} messageStyle="error-pop-up"/>
                     <h2 className="loginTitle">Login to application</h2>
                     <form className="loginForm">
                         <div>
@@ -162,4 +163,17 @@ class App extends React.Component {
     }
 }
 
-export default App
+const mapStateToProps = (state) => {
+    return {
+      notification: state.notification
+    }
+  }
+
+const mapDispatchToProps = {
+    notify
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(App)
