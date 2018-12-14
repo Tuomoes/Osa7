@@ -123,6 +123,8 @@ class App extends React.Component {
             <div>
                 <h2>blogs</h2>
                 <p>
+                    <NavLink exact to='/'>blogs</NavLink>&nbsp;
+                    <NavLink exact to='/users'>users</NavLink>&nbsp;
                     {this.state.user.name + " logged in"} <button onClick={this.logout}>logout</button>
                 </p>
                 <Togglable.Togglable buttonLabel="create blog">
@@ -230,8 +232,6 @@ class App extends React.Component {
                 return(<div />)
             }
         }
-
-        
     }
 
     render() {
