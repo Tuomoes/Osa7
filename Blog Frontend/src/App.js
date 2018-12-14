@@ -194,7 +194,7 @@ class App extends React.Component {
                     </tr>
                     {this.state.users.map(user => 
                         <tr> 
-                            <td>{user.name + ' '}</td>
+                            <td><NavLink exact to={`/users/${user._id}`}>{user.name + ' '}</NavLink>&nbsp;</td>
                             <td>{user.blogs.length}</td>
                         </tr>
                     )}
@@ -203,13 +203,45 @@ class App extends React.Component {
         )
     }
 
+    userPage = () => {
+        //const user = {name: 'paavo', blogs: [{name: 'blogin nimi'}]}
+
+        if (this.state.user === null) {
+            return(<this.loginPage />)
+        }
+        else {
+            const url = window.location.href
+            const userId = url.substring(url.lastIndexOf("/") + 1)
+            console.log('userId is: ', userId)
+            const user = this.state.users.find(x => x._id === userId)
+            console.log('user is: ', user)
+            if (user !== null && user !== undefined)
+            return (
+                <div>
+                    <this.topBar />
+                    <h2>{user.name}</h2>
+                    <h3>Added blogs</h3>
+                    {user.blogs.map(blog => 
+                        <li>{blog.title + ' by ' + blog.author}</li>
+                    )}
+                </div>
+            )
+            else {
+                return(<div />)
+            }
+        }
+
+        
+    }
+
     render() {
         return(
             <div className="container">
             <Router>
                 <div>
                     <Route exact path="/" render={() => <this.frontPage />} />
-                    <Route path="/users" render={() => <this.usersPage />} />
+                    <Route exact path="/users" render={() => <this.usersPage />} />
+                    <Route exact path="/users/:id" render={({match}) => <this.userPage />} />
                 </div>
             </Router>
           </div>
